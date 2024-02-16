@@ -48,7 +48,7 @@ jobs:
           file: aws-sam-cli-pip.dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-pip:${{ steps.meta.outputs.labels.org.opencontainers.image.version }},ghcr.io/zpascal/aws-sam-cli-container-pip:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-pip:${{ env.DOCKER_METADATA_OUTPUT_VERSION }},ghcr.io/zpascal/aws-sam-cli-container-pip:latest
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push Docker image (ARM64 version)
