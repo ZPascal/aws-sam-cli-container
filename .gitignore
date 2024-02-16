@@ -1,0 +1,7 @@
+### IntelliJ IDEA ###
+.idea
+/AWS-SAM-CLI-Container.iml
+
+### Mac OS ###
+.DS_Store
+
