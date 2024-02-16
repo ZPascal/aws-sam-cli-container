@@ -6,7 +6,7 @@ WORKDIR /tmp
 
 RUN apt update && apt install wget unzip -y && cd /tmp && \
     wget https://github.com/aws/aws-sam-cli/releases/download/${AWS_SAM_CLI_VERSION}/aws-sam-cli-linux-x86_64.zip -O aws-sam-cli-linux-x86_64.zip && \
-    unzip aws-sam-cli-linux-x86_64.zip -d sam-installation && ./sam-installation/install
+    unzip aws-sam-cli-linux-x86_64.zip -d sam-installation && ./sam-installation/install && sam --version
 
 FROM gcr.io/distroless/base-debian12:latest
 MAINTAINER Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>

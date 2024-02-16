@@ -7,6 +7,6 @@ LABEL application="AWS SAM ClI Apline container" \
       lastUpdatedBy="Pascal Zimmermann" \
       lastUpdatedOn="2024-02-15"
 
-RUN apk --no-cache update && apk --no-cache upgrade && apk add python3 python3-dev py-pip && \
+RUN apk --no-cache update && apk --no-cache upgrade && apk add python3 python3-dev py-pip gcc && \
     rm /usr/lib/python3.11/EXTERNALLY-MANAGED && pip install aws-sam-cli && \
     sam --version
