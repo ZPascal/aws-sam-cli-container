@@ -1,5 +1,5 @@
 # AWS-SAM-CLI-Container
-!The repository includes an AWS SAM CLI inside an Alpine/ Distroless container. It's possible to interact with the AWS Serverless Application Model service and use e.g. the SAM CLI inside an isolated container environment.
+The repository includes an AWS SAM CLI inside an Alpine/ Distroless container. It's possible to interact with the AWS Serverless Application Model service and use e.g. the SAM CLI inside an isolated container environment.
 
 ## Usage
 
