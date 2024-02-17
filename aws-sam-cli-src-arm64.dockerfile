@@ -22,4 +22,4 @@ ENV PATH=/ \
 
 COPY --from=build /tmp/sam-installation/dist/sam sam
 COPY --from=build /tmp/sam-installation/dist/_internal /_internal
-COPY --from=build /lib/x86_64-linux-gnu/libz.so.1 /lib/x86_64-linux-gnu/libz.so.1
+COPY --from=build /lib/aarch64-linux-gnu/libz.so.1 /lib/aarch64-linux-gnu/libz.so.1
