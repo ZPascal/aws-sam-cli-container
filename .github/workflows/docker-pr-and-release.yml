@@ -1,7 +1,6 @@
 name: docker
 
 on:
-  workflow_dispatch:
   pull_request:
   push:
     tags:
@@ -36,13 +35,26 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Extract the image name for the Pip case
-        run: echo "IMAGE_NAME_PIP=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
+        run: |
+          echo "IMAGE_NAME_PIP=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image (source version)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: aws-sam-cli-src.dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            "AWS_SAM_CLI_VERSION=v1.109.0"
 
       - name: Build and push Docker image (pip version)
         uses: docker/build-push-action@v5
@@ -52,24 +64,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PIP }}-pip:${{ env.DOCKER_METADATA_OUTPUT_VERSION }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PIP }}-pip:latest
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build and push Docker image (ARM64 version)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: aws-sam-cli-src-arm64.dockerfile
-          platforms: linux/arm64
-          push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build and push Docker image (X86-64 version)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: aws-sam-cli-src-x86-64.dockerfile
-          platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
-          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
