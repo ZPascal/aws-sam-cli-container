@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
@@ -34,9 +35,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Extract the image name for the Pip case
+      - name: Extract the image name for the Pip case and init meta elements
         run: |
           echo "IMAGE_NAME_PIP=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
+          echo "CURRENT_DATE=`echo $(date +'%Y-%m-%d')`" >>${GITHUB_ENV}
+          echo "AWS_SAM_CLI_VERSION=`echo ${AWS_SAM_CLI_VERSION}`" >>${GITHUB_ENV}
+        env:
+          AWS_SAM_CLI_VERSION: 1.110.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -54,7 +59,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "AWS_SAM_CLI_VERSION=v1.110.0"
+            "AWS_SAM_CLI_VERSION=v${{ env.AWS_SAM_CLI_VERSION }}"
+            "CURRENT_DATE=${{ env.CURRENT_DATE }}"
 
       - name: Build and push Docker image (pip version)
         uses: docker/build-push-action@v5
@@ -65,3 +71,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PIP }}-pip:${{ env.DOCKER_METADATA_OUTPUT_VERSION }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PIP }}-pip:latest
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            "AWS_SAM_CLI_VERSION=${{ env.AWS_SAM_CLI_VERSION }}"
+            "CURRENT_DATE=${{ env.CURRENT_DATE }}"
