@@ -38,7 +38,7 @@ jobs:
       - name: Extract the image name for the Pip case and init meta elements
         run: |
           echo "IMAGE_NAME_PIP=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
-          echo "CURRENT_DATE=`echo $(date +'%Y-%m-%d')" >>${GITHUB_ENV}
+          echo "CURRENT_DATE=`echo $(date +'%Y-%m-%d')`" >>${GITHUB_ENV}
         env:
           AWS_SAM_CLI_VERSION: 1.110.0
 
