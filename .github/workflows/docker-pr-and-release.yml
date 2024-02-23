@@ -54,7 +54,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "AWS_SAM_CLI_VERSION=v1.109.0"
+            "AWS_SAM_CLI_VERSION=v1.110.0"
 
       - name: Build and push Docker image (pip version)
         uses: docker/build-push-action@v5
