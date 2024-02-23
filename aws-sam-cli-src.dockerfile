@@ -1,6 +1,7 @@
 FROM debian:12-slim AS build
 
 ARG AWS_SAM_CLI_VERSION
+ARG CURRENT_DATE
 ARG TARGETARCH
 
 WORKDIR /tmp
@@ -12,11 +13,11 @@ RUN apt update && apt install wget unzip -y && cd /tmp && \
 FROM gcr.io/distroless/base-debian12:latest
 MAINTAINER Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>
 
-LABEL application="AWS SAM ClI Apline container" \
-      description="AWS SAM ClI Apline container" \
-      version="0.0.1" \
+LABEL application="AWS SAM ClI Distroless container" \
+      description="AWS SAM ClI Distroless container" \
+      version="${AWS_SAM_CLI_VERSION}" \
       lastUpdatedBy="Pascal Zimmermann" \
-      lastUpdatedOn="2024-02-17"
+      lastUpdatedOn="${CURRENT_DATE}"
 
 ENV PATH=/ \
     PYTHONHOME=""
