@@ -41,7 +41,7 @@ jobs:
           echo "CURRENT_DATE=`echo $(date +'%Y-%m-%d')`" >>${GITHUB_ENV}
           echo "AWS_SAM_CLI_VERSION=`echo ${AWS_SAM_CLI_VERSION}`" >>${GITHUB_ENV}
         env:
-          AWS_SAM_CLI_VERSION: 1.111.0
+          AWS_SAM_CLI_VERSION: 1.112.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
