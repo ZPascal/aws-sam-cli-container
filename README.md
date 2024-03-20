@@ -3,17 +3,17 @@ The repository includes an AWS SAM CLI inside an Alpine/ Distroless container. I
 
 ## Usage
 
-Please use the following command to start the AWS SAM CLI container and execute your corresponding commands. It's necessary to adapt the used image version e.g. `ghcr.io/zpascal/aws-sam-cli-container-pip:v1.112.0` or `ghcr.io/zpascal/aws-sam-cli-container:v1.112.0`. Please also adjust the optional volume/ file or folder mounts to use it inside the AWS SAM CLI container and execute the following command: `docker run -it --rm ghcr.io/zpascal/<Image version e.g. aws-sam-cli-container-pipp or aws-sam-cli-container>:v1.112.0 sam <command> -v <optional volume mount>`.
+Please use the following command to start the AWS SAM CLI container and execute your corresponding commands. It's necessary to adapt the used image version e.g. `ghcr.io/zpascal/aws-sam-cli-container-pip:v1.113.0` or `ghcr.io/zpascal/aws-sam-cli-container:v1.113.0`. Please also adjust the optional volume/ file or folder mounts to use it inside the AWS SAM CLI container and execute the following command: `docker run -it --rm ghcr.io/zpascal/<Image version e.g. aws-sam-cli-container-pipp or aws-sam-cli-container>:v1.113.0 sam <command> -v <optional volume mount>`.
 
 ## Different versions of the containers
 
 ### AWS SAM CLI container generic PIP version
 
-This version is available by using the `ghcr.io/zpascal/aws-sam-cli-container-pip:v1.112.0` image. It is based on an `Alpine` container and includes the SAM CLI installed via pip.
+This version is available by using the `ghcr.io/zpascal/aws-sam-cli-container-pip:v1.113.0` image. It is based on an `Alpine` container and includes the SAM CLI installed via pip.
 
 ### AWS SAM CLI container built from source ARM64 version
 
-This version is available by using the `ghcr.io/zpascal/aws-sam-cli-container:v1.112.0` image. It is based on a Distroless `Debian` container for `ARM64` and includes the SAM CLI installed from the source.
+This version is available by using the `ghcr.io/zpascal/aws-sam-cli-container:v1.113.0` image. It is based on a Distroless `Debian` container for `ARM64` and includes the SAM CLI installed from the source.
 
 ### AWS SAM CLI container built from source X86-64 version
 
