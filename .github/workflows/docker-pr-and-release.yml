@@ -2,9 +2,8 @@ name: docker
 
 on:
   pull_request:
-  push:
-    tags:
-      - "*"
+  schedule:
+    - cron: "0 8 7 * 2"
 
 env:
   REGISTRY: ghcr.io
@@ -35,13 +34,21 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Get the old image version
+        run: echo "AWS_SAM_CLI_VERSION_OLD=$(curl -s -l https://api.github.com/repos/ZPascal/aws-sam-cli-container/releases/latest | jq .tag_name | sed s/\"//g)" >>${GITHUB_ENV}
+
+      - name: Get the latest AWS SAM CLI version
+        run: echo "AWS_SAM_CLI_VERSION=$(curl -s -l https://api.github.com/repos/aws/aws-sam-cli/releases/latest | jq .tag_name | sed s/\"//g)" >>${GITHUB_ENV}
+      
+      - name: Adapt the documentation
+        if: ${{ env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+        run: sed -i "s/${AWS_SAM_CLI_VERSION_OLD}/${AWS_SAM_CLI_VERSION}/g" README.md
+      
       - name: Extract the image name for the Pip case and init meta elements
         run: |
           echo "IMAGE_NAME_PIP=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
           echo "CURRENT_DATE=`echo $(date +'%Y-%m-%d')`" >>${GITHUB_ENV}
-          echo "AWS_SAM_CLI_VERSION=`echo ${AWS_SAM_CLI_VERSION}`" >>${GITHUB_ENV}
-        env:
-          AWS_SAM_CLI_VERSION: 1.113.0
+          echo "AWS_SAM_CLI_VERSION_PIP=`echo ${AWS_SAM_CLI_VERSION} | sed s/v//g`" >>${GITHUB_ENV}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -55,11 +62,11 @@ jobs:
           context: .
           file: aws-sam-cli-src.dockerfile
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
+          push: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }} # Never push on pull-request
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "AWS_SAM_CLI_VERSION=v${{ env.AWS_SAM_CLI_VERSION }}"
+            "AWS_SAM_CLI_VERSION=${{ env.AWS_SAM_CLI_VERSION }}"
             "CURRENT_DATE=${{ env.CURRENT_DATE }}"
 
       - name: Build and push Docker image (pip version)
@@ -68,9 +75,38 @@ jobs:
           context: .
           file: aws-sam-cli-pip.dockerfile
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }} # Never push on pull-request
+          push: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }} # Never push on pull-request
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PIP }}-pip:${{ env.DOCKER_METADATA_OUTPUT_VERSION }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PIP }}-pip:latest
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "AWS_SAM_CLI_VERSION=${{ env.AWS_SAM_CLI_VERSION }}"
+            "AWS_SAM_CLI_VERSION=${{ env.AWS_SAM_CLI_VERSION_PIP }}"
             "CURRENT_DATE=${{ env.CURRENT_DATE }}"
+
+      - name: Commit files
+        if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+        run: |
+          git config --local user.email "info@theiotstudio.com"
+          git config --local user.name "tis-service-user"
+          git add README.md
+          git commit -a -m "feat: Update the SAM CLI release ${{ env.AWS_SAM_CLI_VERSION }} version documentation"
+
+      - name: Create the tag
+        run: git tag ${AWS_SAM_CLI_VERSION}
+        if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+
+      - name: Push the tag
+        uses: ad-m/github-push-action@master
+        if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          branch: main
+          tags: true
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          tag_name: ${AWS_SAM_CLI_VERSION}
+          name: ${AWS_SAM_CLI_VERSION}
+          generate_release_notes: true
