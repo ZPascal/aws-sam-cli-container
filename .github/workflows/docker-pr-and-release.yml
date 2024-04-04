@@ -99,7 +99,7 @@ jobs:
         uses: ad-m/github-push-action@master
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
           tags: true
 
@@ -107,7 +107,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${AWS_SAM_CLI_VERSION}
           name: ${AWS_SAM_CLI_VERSION}
           generate_release_notes: true
