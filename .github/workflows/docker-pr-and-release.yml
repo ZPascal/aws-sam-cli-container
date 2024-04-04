@@ -1,4 +1,4 @@
-name: docker
+name: docker build
 
 on:
   pull_request:
@@ -86,28 +86,36 @@ jobs:
       - name: Commit files
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         run: |
-          git config --local user.email "info@theiotstudio.com"
-          git config --local user.name "tis-service-user"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add README.md
           git commit -a -m "feat: Update the SAM CLI release ${{ env.AWS_SAM_CLI_VERSION }} version documentation"
 
       - name: Create the tag
         run: git tag ${AWS_SAM_CLI_VERSION}
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+        with:
+          title: "feat: Update the SAM CLI release to ${{ env.AWS_SAM_CLI_VERSION }}"
+          body: "feat: Update the SAM CLI release to ${{ env.AWS_SAM_CLI_VERSION }}"
+          branch: update-the-release-version
+          base: main
 
-      - name: Push the tag
+      - name: Push the tag and update the feature branch
         uses: ad-m/github-push-action@master
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
-          branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           tags: true
-
+      
       - name: Release
         uses: softprops/action-gh-release@v2
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${AWS_SAM_CLI_VERSION}
           name: ${AWS_SAM_CLI_VERSION}
           generate_release_notes: true
