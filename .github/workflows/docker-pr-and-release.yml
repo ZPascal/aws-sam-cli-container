@@ -99,6 +99,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
+          git-token: ${{ secrets.PAT_TOKEN }}
           title: "feat: Update the SAM CLI release to ${{ env.AWS_SAM_CLI_VERSION }}"
           body: "feat: Update the SAM CLI release to ${{ env.AWS_SAM_CLI_VERSION }}"
           branch: update-the-release-version
