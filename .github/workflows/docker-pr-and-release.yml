@@ -39,16 +39,15 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Get the old image version
-        run: echo "AWS_SAM_CLI_VERSION_OLD=$(curl -s -l https://api.github.com/repos/ZPascal/aws-sam-cli-container/releases/latest | jq .tag_name | sed s/\"//g)" >>${GITHUB_ENV}
+        run: echo "AWS_SAM_CLI_VERSION_OLD=$(curl -s -l https://api.github.com/repos/ZPascal/aws-sam-cli-container/releases/latest | jq .tag_name | sed s/\"//g | sed s/v//g)" >>${GITHUB_ENV}
 
       - name: Get the latest AWS SAM CLI version
-        run: echo "AWS_SAM_CLI_VERSION=$(curl -s -l https://api.github.com/repos/aws/aws-sam-cli/releases/latest | jq .tag_name | sed s/\"//g)" >>${GITHUB_ENV}
+        run: echo "AWS_SAM_CLI_VERSION=$(curl -s -l https://api.github.com/repos/aws/aws-sam-cli/releases/latest | jq .tag_name | sed s/\"//g | sed s/v//g)" >>${GITHUB_ENV}
 
       - name: Extract the image name for the Pip case and init meta elements
         run: |
           echo "IMAGE_NAME_PIP=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
           echo "CURRENT_DATE=`echo $(date +'%Y-%m-%d')`" >>${GITHUB_ENV}
-          echo "AWS_SAM_CLI_VERSION=`echo ${AWS_SAM_CLI_VERSION}`" >>${GITHUB_ENV}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
