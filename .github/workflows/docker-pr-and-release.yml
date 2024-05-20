@@ -98,10 +98,23 @@ jobs:
         uses: ad-m/github-push-action@master
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
-          branch: main
+          branch: update-the-sam-cli-version
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tags: true
           force: true
+
+      - name: Create a PR
+        if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          title: "Update the AWS SAM CLI version"
+          body: "Update the AWS SAM CLI version. The PR is automatically generated."
+          labels: "version-bump"
+          reviewers: ZPascal
+          branch: update-the-sam-cli-version
 
       - name: Create new release
         uses: softprops/action-gh-release@v2
