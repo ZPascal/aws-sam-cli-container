@@ -53,9 +53,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Update metadata labels for Docker
-        id: prepared-meta-labels-src
-        run: echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "${{ env.AWS_SAM_CLI_VERSION }}" '.labels."org.opencontainers.image.version"=$version' | jq --arg description "AWS SAM CLI build from source inside an Distroless container" '.labels."org.opencontainers.image.description"=$description'
+      - name: Update metadata labels for Docker (src)
+        run: echo DOCKER_META_LABELS_SRC=$(echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "${{ env.AWS_SAM_CLI_VERSION }}" '.labels."org.opencontainers.image.version"=$version' | jq --arg description "AWS SAM CLI build from source inside an Distroless container" '.labels."org.opencontainers.image.description"=$description') >> ${GITHUB_ENV}
 
       - name: Build and push Docker image (source version)
         uses: docker/build-push-action@v5
@@ -65,12 +64,12 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }} # Never push on pull-request
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ env.AWS_SAM_CLI_VERSION }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          labels: ${{ steps.prepared-meta-labels-src.outputs.stdout }}
+          labels: ${{ env.DOCKER_META_LABELS_SRC }}
           build-args: |
             "AWS_SAM_CLI_VERSION=${{ env.AWS_SAM_CLI_VERSION }}"
             "CURRENT_DATE=${{ env.CURRENT_DATE }}"
             
-      - name: Update metadata (tags, labels) for Docker
+      - name: Update metadata labels for Docker (pip)
         id: prepared-meta-labels-pip
         run: echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "$AWS_SAM_CLI_VERSION" '.labels."org.opencontainers.image.version"=$version' | jq --arg description "AWS SAM CLI installation from pip inside an Alpine container" '.labels."org.opencontainers.image.description"=$description'
 
