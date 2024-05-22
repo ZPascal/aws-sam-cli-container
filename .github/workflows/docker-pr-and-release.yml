@@ -55,7 +55,7 @@ jobs:
 
       - name: Update metadata labels for Docker
         id: prepared-meta-labels-src
-        run: echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "${{ env.AWS_SAM_CLI_VERSION }}" '.labels."org.opencontainers.image.version"=$version' | jq '.labels."org.opencontainers.image.description"=AWS SAM CLI build from source inside an Distroless container'
+        run: echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "${{ env.AWS_SAM_CLI_VERSION }}" '.labels."org.opencontainers.image.version"=$version' | jq --arg description "AWS SAM CLI build from source inside an Distroless container" '.labels."org.opencontainers.image.description"=$description'
 
       - name: Build and push Docker image (source version)
         uses: docker/build-push-action@v5
@@ -72,7 +72,7 @@ jobs:
             
       - name: Update metadata (tags, labels) for Docker
         id: prepared-meta-labels-pip
-        run: echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "$AWS_SAM_CLI_VERSION" '.labels."org.opencontainers.image.version"=$version' | jq '.labels."org.opencontainers.image.description"=AWS SAM CLI installation from pip inside an Alpine container'
+        run: echo '${{ env.DOCKER_METADATA_OUTPUT_JSON }}' | jq --arg version "$AWS_SAM_CLI_VERSION" '.labels."org.opencontainers.image.version"=$version' | jq --arg description "AWS SAM CLI installation from pip inside an Alpine container" '.labels."org.opencontainers.image.description"=$description'
 
       - name: Build and push Docker image (pip version)
         uses: docker/build-push-action@v5
