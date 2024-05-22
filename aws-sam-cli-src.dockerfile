@@ -18,6 +18,7 @@ LABEL application="AWS SAM ClI Distroless container" \
       version="${AWS_SAM_CLI_VERSION}" \
       lastUpdatedBy="Pascal Zimmermann" \
       lastUpdatedOn="${CURRENT_DATE}"
+LABEL org.opencontainers.image.description="AWS SAM CLI build from source inside an Distroless container"
 
 ENV PATH=/ \
     PYTHONHOME=""

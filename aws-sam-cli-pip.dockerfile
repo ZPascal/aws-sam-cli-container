@@ -9,6 +9,7 @@ LABEL application="AWS SAM ClI Alpine container" \
       version="${AWS_SAM_CLI_VERSION}" \
       lastUpdatedBy="Pascal Zimmermann" \
       lastUpdatedOn="${CURRENT_DATE}"
+LABEL org.opencontainers.image.description="AWS SAM CLI installation from pip inside an Alpine container"
 
 # Be aware musl-dev, py3-ruamel.yaml.clib and py3-cffi is only necessary in case of ARM64 based containers
 RUN apk --no-cache update && apk --no-cache upgrade && apk add python3 python3-dev py-pip py3-ruamel.yaml.clib py3-cffi && \
