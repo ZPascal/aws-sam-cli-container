@@ -7,7 +7,7 @@ ARG TARGETARCH
 WORKDIR /tmp
 
 RUN apt update && apt install wget unzip -y && cd /tmp && \
-    wget https://github.com/aws/aws-sam-cli/releases/download/${AWS_SAM_CLI_VERSION}/aws-sam-cli-linux-$(/bin/bash -c 'if [[ "${TARGETARCH}" == "amd64" ]]; then echo x86_64; else echo ${TARGETARCH}; fi').zip -O aws-sam-cli-linux-$(/bin/bash -c 'if [[ "${TARGETARCH}" == "amd64" ]]; then echo x86_64; else echo ${TARGETARCH}; fi').zip && \
+    wget https://github.com/aws/aws-sam-cli/releases/download/v${AWS_SAM_CLI_VERSION}/aws-sam-cli-linux-$(/bin/bash -c 'if [[ "${TARGETARCH}" == "amd64" ]]; then echo x86_64; else echo ${TARGETARCH}; fi').zip -O aws-sam-cli-linux-$(/bin/bash -c 'if [[ "${TARGETARCH}" == "amd64" ]]; then echo x86_64; else echo ${TARGETARCH}; fi').zip && \
     unzip aws-sam-cli-linux-$(/bin/bash -c 'if [[ "${TARGETARCH}" == "amd64" ]]; then echo x86_64; else echo ${TARGETARCH}; fi').zip -d sam-installation && ./sam-installation/install && cp /lib/*-linux-gnu/libz.so.1 /lib/libz.so.1 && sam --version
 
 FROM gcr.io/distroless/base-debian12:latest
@@ -18,6 +18,7 @@ LABEL application="AWS SAM ClI Distroless container" \
       version="${AWS_SAM_CLI_VERSION}" \
       lastUpdatedBy="Pascal Zimmermann" \
       lastUpdatedOn="${CURRENT_DATE}"
+LABEL org.opencontainers.image.description="AWS SAM CLI build from source inside an Distroless container"
 
 ENV PATH=/ \
     PYTHONHOME=""
