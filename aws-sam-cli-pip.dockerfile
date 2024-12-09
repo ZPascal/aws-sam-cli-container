@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM alpine:3.21
 MAINTAINER Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>
 
 ARG AWS_SAM_CLI_VERSION
