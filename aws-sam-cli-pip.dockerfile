@@ -1,5 +1,5 @@
-FROM alpine:3.20
-MAINTAINER Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>
+FROM alpine:3.21
+LABEL org.opencontainers.image.authors="Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>" 
 
 ARG AWS_SAM_CLI_VERSION
 ARG CURRENT_DATE
