@@ -11,14 +11,13 @@ RUN apt update && apt install wget unzip -y && cd /tmp && \
     unzip aws-sam-cli-linux-$(/bin/bash -c 'if [[ "${TARGETARCH}" == "amd64" ]]; then echo x86_64; else echo ${TARGETARCH}; fi').zip -d sam-installation && ./sam-installation/install && cp /lib/*-linux-gnu/libz.so.1 /lib/libz.so.1 && sam --version
 
 FROM gcr.io/distroless/base-debian12:latest
-MAINTAINER Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>
 
-LABEL application="AWS SAM ClI Distroless container" \
-      description="AWS SAM ClI Distroless container" \
-      version="${AWS_SAM_CLI_VERSION}" \
+LABEL org.opencontainers.image.title="AWS SAM ClI Distroless container" \
+      org.opencontainers.image.description="AWS SAM CLI build from source inside an Distroless container" \
+      org.opencontainers.image.version="${AWS_SAM_CLI_VERSION}" \
+      org.opencontainers.image.authors="Pascal Zimmermann <pascal.zimmermann@theiotstudio.com>" \
       lastUpdatedBy="Pascal Zimmermann" \
       lastUpdatedOn="${CURRENT_DATE}"
-LABEL org.opencontainers.image.description="AWS SAM CLI build from source inside an Distroless container"
 
 ENV PATH=/ \
     PYTHONHOME=""
