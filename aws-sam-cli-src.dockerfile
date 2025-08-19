@@ -1,4 +1,4 @@
-FROM debian:12-slim AS build
+FROM debian:13-slim AS build
 
 ARG AWS_SAM_CLI_VERSION
 ARG CURRENT_DATE
