@@ -122,7 +122,7 @@ jobs:
           branch: update-the-sam-cli-version
 
       - name: Create new release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: ${{ github.event_name != 'pull_request' && env.AWS_SAM_CLI_VERSION_OLD != env.AWS_SAM_CLI_VERSION }}
         with:
           tag_name: "v${{ env.AWS_SAM_CLI_VERSION }}"
